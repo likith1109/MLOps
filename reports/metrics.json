@@ -1,0 +1,103 @@
+{
+  "test_evaluation": {
+    "logistic_regression": {
+      "test_metrics": {
+        "accuracy": 0.5610766045548654,
+        "precision_weighted": 0.5590566931056257,
+        "recall_weighted": 0.5610766045548654,
+        "f1_weighted": 0.5577429698371149,
+        "f1_macro": 0.36693887509966727
+      },
+      "per_class_metrics": {
+        "Poor": {
+          "precision": 0.12,
+          "recall": 0.3,
+          "f1": 0.17142857142857143,
+          "support": 10
+        },
+        "Needs Improvement": {
+          "precision": 0.40789473684210525,
+          "recall": 0.31313131313131315,
+          "f1": 0.35428571428571426,
+          "support": 99
+        },
+        "Good": {
+          "precision": 0.19753086419753085,
+          "recall": 0.18604651162790697,
+          "f1": 0.19161676646706588,
+          "support": 86
+        },
+        "Excellent": {
+          "precision": 0.7342192691029901,
+          "recall": 0.7673611111111112,
+          "f1": 0.7504244482173175,
+          "support": 288
+        }
+      }
+    },
+    "random_forest": {
+      "test_metrics": {
+        "accuracy": 0.5900621118012422,
+        "precision_weighted": 0.533280651334041,
+        "recall_weighted": 0.5900621118012422,
+        "f1_weighted": 0.5544181734373882,
+        "f1_macro": 0.3925246342038615
+      },
+      "per_class_metrics": {
+        "Poor": {
+          "precision": 0.375,
+          "recall": 0.3,
+          "f1": 0.3333333333333333,
+          "support": 10
+        },
+        "Needs Improvement": {
+          "precision": 0.4230769230769231,
+          "recall": 0.3333333333333333,
+          "f1": 0.3728813559322034,
+          "support": 99
+        },
+        "Good": {
+          "precision": 0.14893617021276595,
+          "recall": 0.08139534883720931,
+          "f1": 0.10526315789473684,
+          "support": 86
+        },
+        "Excellent": {
+          "precision": 0.6914285714285714,
+          "recall": 0.8402777777777778,
+          "f1": 0.7586206896551724,
+          "support": 288
+        }
+      }
+    },
+    "majority_class_baseline": {
+      "most_frequent_class": 3,
+      "accuracy": 0.5962732919254659,
+      "f1_macro": 0.1867704280155642
+    },
+    "test_rows": 483,
+    "test_unique_questions": 17
+  },
+  "selection": {
+    "cv_metrics": {
+      "logistic_regression": {
+        "cv_f1_macro_mean": 0.3717059433700083,
+        "cv_f1_macro_std": 0.04560637515277345
+      },
+      "random_forest": {
+        "cv_f1_macro_mean": 0.36902643149154596,
+        "cv_f1_macro_std": 0.043366062711527535
+      }
+    },
+    "validation_f1_macro": {
+      "logistic_regression": 0.3418321546049039,
+      "random_forest": 0.3777617571432004
+    },
+    "primary_model": "random_forest",
+    "selection_reason": "Tie on CV f1_macro (gap=0.0027 < max_std=0.0456); RandomForest has higher val f1_macro (0.3778 vs 0.3418)",
+    "selection_rule": "choose higher grouped-CV f1_macro mean; if gap < max(CV f1_macro stds), tie-break by higher validation f1_macro"
+  },
+  "notes": {
+    "poor_class_test_rows": 10
+  }
+}

@@ -104,16 +104,27 @@ stages:
           cache: true
 
   evaluate:
-    cmd: python src/evaluation/evaluate.py
+    cmd: MLFLOW_ALLOW_FILE_STORE=true python src/evaluation/evaluate.py
     deps:
       - data/processed/test.parquet
       - models/baseline_model.joblib
+      - models/rf_model.joblib
+      - models/feature_pipeline.joblib
       - src/evaluation/evaluate.py
     params:
       - evaluation.primary_metric
+      - evaluation.selection_rule
     metrics:
       - reports/metrics.json:
           cache: false
     plots:
       - reports/figures/confusion_matrix.png:
+          cache: false
+      - reports/figures/confusion_matrix_random_forest.png:
+          cache: false
+      - reports/figures/confusion_matrix_logistic_regression.png:
+          cache: false
+      - reports/figures/class_distribution.png:
+          cache: false
+      - reports/figures/answer_length_by_class.png:
           cache: false

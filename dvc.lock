@@ -85,7 +85,7 @@ stages:
       md5: c406d619d9e82c59c18cf7a5f6479578
       size: 20171
   feature_engineering:
-    cmd: python src/features/build_features.py
+    cmd: python -m src.features.build_features
     deps:
     - path: data/processed/test.parquet
       hash: md5
@@ -117,7 +117,7 @@ stages:
     outs:
     - path: models/feature_pipeline.joblib
       hash: md5
-      md5: cf312c902741cd7c834142cc338619ec
+      md5: 4ade4f1e58f2c65e2c34800ec99f358c
       size: 242191
   train_baseline:
     cmd: MLFLOW_ALLOW_FILE_STORE=true python src/models/train_baseline.py
@@ -128,12 +128,12 @@ stages:
       size: 96817
     - path: models/feature_pipeline.joblib
       hash: md5
-      md5: cf312c902741cd7c834142cc338619ec
+      md5: 4ade4f1e58f2c65e2c34800ec99f358c
       size: 242191
     - path: src/models/train_baseline.py
       hash: md5
-      md5: 9e4b9b91541acb6d5051a9e5c7082dd1
-      size: 11120
+      md5: 47f66ae083ab6a11fe3dddd57eed8135
+      size: 4181
     params:
       params.yaml:
         model.baseline.algorithm: logistic_regression
@@ -159,7 +159,7 @@ stages:
       size: 20171
     - path: models/feature_pipeline.joblib
       hash: md5
-      md5: cf312c902741cd7c834142cc338619ec
+      md5: 4ade4f1e58f2c65e2c34800ec99f358c
       size: 242191
     - path: src/models/train_compare.py
       hash: md5
@@ -176,3 +176,56 @@ stages:
       hash: md5
       md5: 4698720322000d940bf93a9205105ffc
       size: 27830425
+  evaluate:
+    cmd: MLFLOW_ALLOW_FILE_STORE=true python src/evaluation/evaluate.py
+    deps:
+    - path: data/processed/test.parquet
+      hash: md5
+      md5: a7b9c609501f652a443cf078a6a181d3
+      size: 35322
+    - path: models/baseline_model.joblib
+      hash: md5
+      md5: b317b965e7e684a1a16ef055deee0a78
+      size: 91287
+    - path: models/feature_pipeline.joblib
+      hash: md5
+      md5: 4ade4f1e58f2c65e2c34800ec99f358c
+      size: 242191
+    - path: models/rf_model.joblib
+      hash: md5
+      md5: 4698720322000d940bf93a9205105ffc
+      size: 27830425
+    - path: src/evaluation/evaluate.py
+      hash: md5
+      md5: d6921d05bc2e2d4edf53b5d29bc56bd4
+      size: 16459
+    params:
+      params.yaml:
+        evaluation.primary_metric: f1_weighted
+        evaluation.selection_rule: choose higher grouped-CV f1_macro mean; if 
+          gap < max(CV f1_macro stds), tie-break by higher validation f1_macro
+    outs:
+    - path: reports/figures/answer_length_by_class.png
+      hash: md5
+      md5: 2cb643000e66d150fcc2a80e95c1b728
+      size: 55493
+    - path: reports/figures/class_distribution.png
+      hash: md5
+      md5: d8136474772700c890273dc812cc01cc
+      size: 34159
+    - path: reports/figures/confusion_matrix.png
+      hash: md5
+      md5: 4342cb00b02a8c4ebd1b0c587040dfa8
+      size: 51012
+    - path: reports/figures/confusion_matrix_logistic_regression.png
+      hash: md5
+      md5: 467059be75a58c124544c85624397615
+      size: 55611
+    - path: reports/figures/confusion_matrix_random_forest.png
+      hash: md5
+      md5: 4342cb00b02a8c4ebd1b0c587040dfa8
+      size: 51012
+    - path: reports/metrics.json
+      hash: md5
+      md5: 565203fa2e22e73aafa6351c49d5d0c1
+      size: 3037

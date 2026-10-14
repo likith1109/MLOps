@@ -67,3 +67,4 @@ evaluation:
     - "recall_weighted"
     - "f1_macro"
   confusion_matrix: true
+  selection_rule: "choose higher grouped-CV f1_macro mean; if gap < max(CV f1_macro stds), tie-break by higher validation f1_macro"

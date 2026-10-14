@@ -72,7 +72,7 @@ stages:
           cache: true
 
   train_baseline:
-    cmd: MLFLOW_ALLOW_FILE_STORE=true python src/models/train_baseline.py
+    cmd: MLFLOW_ALLOW_FILE_STORE=true PYTHONPATH=. python src/models/train_baseline.py
     deps:
       - data/processed/train.parquet
       - models/feature_pipeline.joblib
@@ -88,7 +88,7 @@ stages:
           cache: true
 
   train_compare:
-    cmd: MLFLOW_ALLOW_FILE_STORE=true python src/models/train_compare.py
+    cmd: MLFLOW_ALLOW_FILE_STORE=true PYTHONPATH=. python src/models/train_compare.py
     deps:
       - data/processed/train.parquet
       - data/processed/val.parquet
@@ -104,7 +104,7 @@ stages:
           cache: true
 
   evaluate:
-    cmd: MLFLOW_ALLOW_FILE_STORE=true python src/evaluation/evaluate.py
+    cmd: MLFLOW_ALLOW_FILE_STORE=true PYTHONPATH=. python src/evaluation/evaluate.py
     deps:
       - data/processed/test.parquet
       - models/baseline_model.joblib

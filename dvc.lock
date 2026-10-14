@@ -146,3 +146,33 @@ stages:
       hash: md5
       md5: b317b965e7e684a1a16ef055deee0a78
       size: 91287
+  train_compare:
+    cmd: MLFLOW_ALLOW_FILE_STORE=true python src/models/train_compare.py
+    deps:
+    - path: data/processed/train.parquet
+      hash: md5
+      md5: 7c8f4673d8db897c04a0fb949b1cbc0d
+      size: 96817
+    - path: data/processed/val.parquet
+      hash: md5
+      md5: c406d619d9e82c59c18cf7a5f6479578
+      size: 20171
+    - path: models/feature_pipeline.joblib
+      hash: md5
+      md5: cf312c902741cd7c834142cc338619ec
+      size: 242191
+    - path: src/models/train_compare.py
+      hash: md5
+      md5: dcdd64c738c93c76ed2dfb8aff194695
+      size: 3879
+    params:
+      params.yaml:
+        model.random_forest.algorithm: random_forest
+        model.random_forest.max_depth:
+        model.random_forest.n_estimators: 300
+        model.random_forest.random_state: 42
+    outs:
+    - path: models/rf_model.joblib
+      hash: md5
+      md5: 4698720322000d940bf93a9205105ffc
+      size: 27830425

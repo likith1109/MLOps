@@ -53,10 +53,10 @@ model:
     solver: "lbfgs"
     max_iter: 1000
     random_state: 42
-  comparison:
+  random_forest:
     algorithm: "random_forest"
-    n_estimators: 100
-    max_depth: 15
+    n_estimators: 300
+    max_depth: null
     random_state: 42
 
 evaluation:

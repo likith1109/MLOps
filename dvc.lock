@@ -119,3 +119,30 @@ stages:
       hash: md5
       md5: cf312c902741cd7c834142cc338619ec
       size: 242191
+  train_baseline:
+    cmd: MLFLOW_ALLOW_FILE_STORE=true python src/models/train_baseline.py
+    deps:
+    - path: data/processed/train.parquet
+      hash: md5
+      md5: 7c8f4673d8db897c04a0fb949b1cbc0d
+      size: 96817
+    - path: models/feature_pipeline.joblib
+      hash: md5
+      md5: cf312c902741cd7c834142cc338619ec
+      size: 242191
+    - path: src/models/train_baseline.py
+      hash: md5
+      md5: 9e4b9b91541acb6d5051a9e5c7082dd1
+      size: 11120
+    params:
+      params.yaml:
+        model.baseline.algorithm: logistic_regression
+        model.baseline.c_param: 1.0
+        model.baseline.max_iter: 1000
+        model.baseline.random_state: 42
+        model.baseline.solver: lbfgs
+    outs:
+    - path: models/baseline_model.joblib
+      hash: md5
+      md5: b317b965e7e684a1a16ef055deee0a78
+      size: 91287

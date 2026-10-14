@@ -9,12 +9,19 @@ base:
   log_level: "INFO"
 
 data:
-  raw_data_path: "data/raw/interview_data.csv"
+  raw_data_path: "data/raw/interview_data.parquet"
+  raw_data_csv_path: "data/raw/interview_data.csv"
   processed_data_dir: "data/processed"
   text_columns:
-    question: "interview_question"
-    answer: "candidate_answer"
+    question: "question"
+    reference_answer: "reference_answer"
+    candidate_answer: "candidate_answer"
+  group_column: "question_id"
   target_column: "quality_label"
+  label_thresholds:
+    poor_max: 2.0
+    needs_improvement_max: 3.5
+    good_max: 4.5
   target_classes:
     0: "Poor"
     1: "Needs Improvement"
@@ -24,7 +31,8 @@ data:
 split:
   test_size: 0.20
   validation_size: 0.10
-  stratify: true
+  group_column: "question_id"
+  # grouped split prevents question leakage
   random_state: 42
 
 features:
@@ -36,7 +44,7 @@ features:
     sublinear_tf: true
   engineered_features:
     include_length: true
-    include_sentiment_placeholder: false
+    include_reference_similarity: true
 
 model:
   baseline:

@@ -1,0 +1,32 @@
+{
+  "n_samples": 2273,
+  "percent_agreement": 58.69,
+  "cohen_kappa": 0.2988,
+  "quadratic_weighted_kappa": 0.4875,
+  "pearson_r": 0.5832,
+  "pearson_p": 0.0,
+  "per_class_agreement_percent": {
+    "0": 21.1,
+    "1": 1.65,
+    "2": 10.22,
+    "3": 13.71,
+    "4": 15.69,
+    "5": 68.42
+  },
+  "grader1_distribution": {
+    "0": 24,
+    "1": 7,
+    "2": 44,
+    "3": 254,
+    "4": 496,
+    "5": 1448
+  },
+  "grader2_distribution": {
+    "0": 108,
+    "1": 116,
+    "2": 161,
+    "3": 252,
+    "4": 337,
+    "5": 1299
+  }
+}

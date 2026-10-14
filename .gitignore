@@ -107,3 +107,4 @@ mlruns/*
 .dvc/tmp
 
 # DO NOT ignore .dvc files, dvc.yaml, dvc.lock, params.yaml
+data/external/

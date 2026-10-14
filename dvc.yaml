@@ -5,12 +5,31 @@
 # ==============================================================================
 
 stages:
+  prepare_dataset:
+    cmd: python src/data/prepare_dataset.py
+    deps:
+      - data/external/mohler
+      - src/data/prepare_dataset.py
+    params:
+      - data.raw_data_path
+      - data.raw_data_csv_path
+    outs:
+      - data/raw/interview_data.parquet:
+          cache: true
+      - data/raw/interview_data.csv:
+          cache: true
+
   load_data:
     cmd: python src/data/load_data.py
     deps:
-      - data/raw/interview_data.csv
+      - data/raw/interview_data.parquet
+      - src/data/load_data.py
     params:
       - data.raw_data_path
+      - data.text_columns
+      - data.group_column
+      - data.target_column
+      - data.label_thresholds
     outs:
       - data/interim/loaded_data.parquet:
           cache: true
@@ -23,6 +42,7 @@ stages:
     params:
       - split.test_size
       - split.validation_size
+      - split.group_column
       - split.random_state
     outs:
       - data/processed/train.parquet:
@@ -42,6 +62,8 @@ stages:
     params:
       - features.tfidf.max_features
       - features.tfidf.ngram_range
+      - features.engineered_features.include_length
+      - features.engineered_features.include_reference_similarity
     outs:
       - models/tfidf_vectorizer.joblib:
           cache: true

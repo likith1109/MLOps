@@ -1,0 +1,11 @@
+# Rules for the coding agent
+- Python 3.11+. Read all hyperparameters and paths from params.yaml; never hardcode them.
+- Dataset: Mohler short-answer grading. Final file: data/raw/interview_data.parquet (plus CSV export).
+- Columns: question_id, question, reference_answer, candidate_answer, score_grader1, score_grader2, score_avg, quality_label. Use these names exactly.
+- NEVER fabricate metrics, rows, scores, or agreement values. Every number comes from running code.
+- NEVER use an LLM to assign labels. Labels come only from the dataset's human scores.
+- Splits must be grouped by question_id (no question in two splits).
+- Every script: params.yaml driven, logging not print, type hints, docstrings, runnable via `python src/...`.
+- After changing a pipeline stage, update dvc.yaml and run `dvc repro`.
+- Never commit secrets. Keep changes minimal; do not rewrite unrelated files.
+- Do not edit or weaken tests to make them pass.

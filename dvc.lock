@@ -1,0 +1,121 @@
+schema: '2.0'
+stages:
+  prepare_dataset:
+    cmd: python src/data/prepare_dataset.py
+    deps:
+    - path: data/external/mohler
+      hash: md5
+      md5: 418317172e5258bd3a477dc9d50aae98.dir
+      size: 160681
+      nfiles: 2
+    - path: src/data/prepare_dataset.py
+      hash: md5
+      md5: d33f4d6a9b9cca7f689094b2b1c41e04
+      size: 8388
+    params:
+      params.yaml:
+        data.raw_data_csv_path: data/raw/interview_data.csv
+        data.raw_data_path: data/raw/interview_data.parquet
+    outs:
+    - path: data/raw/interview_data.csv
+      hash: md5
+      md5: 01d89b6b9d1143fe65a7e18ec4253927
+      size: 695128
+    - path: data/raw/interview_data.parquet
+      hash: md5
+      md5: abeae3f7bafa1ad73bbe81604bde85ec
+      size: 137971
+  load_data:
+    cmd: python src/data/load_data.py
+    deps:
+    - path: data/raw/interview_data.parquet
+      hash: md5
+      md5: abeae3f7bafa1ad73bbe81604bde85ec
+      size: 137971
+    - path: src/data/load_data.py
+      hash: md5
+      md5: 837b5de67b2701930b0ea09bdb6a33a9
+      size: 3961
+    params:
+      params.yaml:
+        data.group_column: question_id
+        data.label_thresholds:
+          poor_max: 2.0
+          needs_improvement_max: 3.5
+          good_max: 4.5
+        data.raw_data_path: data/raw/interview_data.parquet
+        data.target_column: quality_label
+        data.text_columns:
+          question: question
+          reference_answer: reference_answer
+          candidate_answer: candidate_answer
+    outs:
+    - path: data/interim/loaded_data.parquet
+      hash: md5
+      md5: abeae3f7bafa1ad73bbe81604bde85ec
+      size: 137971
+  preprocess:
+    cmd: python src/data/preprocess.py
+    deps:
+    - path: data/interim/loaded_data.parquet
+      hash: md5
+      md5: abeae3f7bafa1ad73bbe81604bde85ec
+      size: 137971
+    - path: src/data/preprocess.py
+      hash: md5
+      md5: 7235524e36dbb99ad2f7f86a83d2d3b5
+      size: 6502
+    params:
+      params.yaml:
+        split.group_column: question_id
+        split.random_state: 42
+        split.test_size: 0.2
+        split.validation_size: 0.1
+    outs:
+    - path: data/processed/test.parquet
+      hash: md5
+      md5: a7b9c609501f652a443cf078a6a181d3
+      size: 35322
+    - path: data/processed/train.parquet
+      hash: md5
+      md5: 7c8f4673d8db897c04a0fb949b1cbc0d
+      size: 96817
+    - path: data/processed/val.parquet
+      hash: md5
+      md5: c406d619d9e82c59c18cf7a5f6479578
+      size: 20171
+  feature_engineering:
+    cmd: python src/features/build_features.py
+    deps:
+    - path: data/processed/test.parquet
+      hash: md5
+      md5: a7b9c609501f652a443cf078a6a181d3
+      size: 35322
+    - path: data/processed/train.parquet
+      hash: md5
+      md5: 7c8f4673d8db897c04a0fb949b1cbc0d
+      size: 96817
+    - path: data/processed/val.parquet
+      hash: md5
+      md5: c406d619d9e82c59c18cf7a5f6479578
+      size: 20171
+    - path: src/features/build_features.py
+      hash: md5
+      md5: f84335e90e7f74e039b65251fba3e0fc
+      size: 9727
+    params:
+      params.yaml:
+        features.engineered_features.include_length: true
+        features.engineered_features.include_reference_similarity: true
+        features.tfidf.max_features: 5000
+        features.tfidf.min_df: 2
+        features.tfidf.ngram_range:
+        - 1
+        - 2
+        features.tfidf.stop_words: english
+        features.tfidf.sublinear_tf: true
+    outs:
+    - path: models/feature_pipeline.joblib
+      hash: md5
+      md5: cf312c902741cd7c834142cc338619ec
+      size: 242191

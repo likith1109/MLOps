@@ -62,17 +62,20 @@ stages:
     params:
       - features.tfidf.max_features
       - features.tfidf.ngram_range
+      - features.tfidf.stop_words
+      - features.tfidf.min_df
+      - features.tfidf.sublinear_tf
       - features.engineered_features.include_length
       - features.engineered_features.include_reference_similarity
     outs:
-      - models/tfidf_vectorizer.joblib:
+      - models/feature_pipeline.joblib:
           cache: true
 
   train_baseline:
     cmd: python src/models/train_baseline.py
     deps:
       - data/processed/train.parquet
-      - models/tfidf_vectorizer.joblib
+      - models/feature_pipeline.joblib
       - src/models/train_baseline.py
     params:
       - model.baseline.algorithm

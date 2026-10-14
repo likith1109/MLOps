@@ -19,7 +19,7 @@
 </p>
 
 <!-- Technology Badges -->
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10%20%7C%203.11-FF6B00?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11-FF6B00?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![DVC](https://img.shields.io/badge/DVC-v3.40_Data_Ops-FF8C00?style=for-the-badge&logo=dvc&logoColor=white)](https://dvc.org/)
 [![MLflow](https://img.shields.io/badge/MLflow-Tracking_&_Registry-FFA726?style=for-the-badge&logo=mlflow&logoColor=white)](https://mlflow.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Modeling-FF6B00?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
@@ -48,6 +48,42 @@ Engineered for academic course **AI252TA (Machine Learning Operations - Semester
 
 > [!NOTE]
 > **Foundation Status:** This project is at **Phase 0 (Foundation)**. No model weights, production deployments, or fabricated benchmark results are claimed. All milestones follow a structured, phased academic implementation plan.
+
+---
+
+## Quick Start (Phase 1)
+
+**Prerequisites:** Python 3.11, Git, `make`.
+
+```bash
+# 1. Clone and enter the repository
+git clone https://github.com/Tejzraj/MLOps.git
+cd MLOps
+
+# 2. Create virtual environment and install dependencies
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 3. Allow MLflow file store (required for local tracking)
+export MLFLOW_ALLOW_FILE_STORE=true
+
+# 4. Download the Mohler ASAG dataset (open_ended split) from Hugging Face
+python src/data/download_mohler.py
+
+# 5. Run the full DVC pipeline (data → split → features → train → evaluate)
+dvc repro
+
+# 6. Run tests
+python -m pytest -q
+```
+
+**Dataset:** Mohler ASAG (Short Answer Grading) — `nkazi/MohlerASAG` on Hugging Face, subset `cleaned`, split `open_ended`, 2273 rows, CC BY 4.0 license (Mohler, Bunescu & Mihalcea 2011). This replaces the earlier synthetic interview data specification. The `data/external/mohler/open_ended.parquet` is DVC-tracked; teammates must run the download command above because the DVC remote (`~/dvc_storage`) is local-only and `dvc pull` will not work for them.
+
+**Files not in Git (enforced by `.gitignore`):** `data/`, `models/*.joblib`, `mlruns/`, `.env`. Commit only code, config, and `dvc.lock`/`*.dvc` pointer files.
+
+> [!NOTE]
+> **Phase 1 is in progress.** This quickstart runs the current pipeline through evaluation; it does not imply Phase 1 completion or production readiness.
 
 ---
 
@@ -177,7 +213,7 @@ flowchart TD
 
 | Domain | Tool / Technology | Status | Role in Pipeline |
 | :--- | :--- | :---: | :--- |
-| **Language** | **Python 3.10+** | ![Active](https://img.shields.io/badge/Active-FF6B00?style=flat-square) | Core runtime environment across entire pipeline |
+| **Language** | **Python 3.11+** | ![Active](https://img.shields.io/badge/Active-FF6B00?style=flat-square) | Core runtime environment across entire pipeline |
 | **Data Ops** | **Pandas, NumPy** | ![Active](https://img.shields.io/badge/Active-FF6B00?style=flat-square) | Numerical transformations, dataframes, and sanitization |
 | **Data Versioning** | **DVC (Data Version Control)** | ![Planned P1](https://img.shields.io/badge/Phase_1-FF8C00?style=flat-square) | Git-independent dataset versioning and pipeline orchestration |
 | **Machine Learning** | **Scikit-learn** | ![Planned P1](https://img.shields.io/badge/Phase_1-FF8C00?style=flat-square) | Baseline classifiers, TF-IDF vectorization, evaluation metrics |
@@ -419,7 +455,7 @@ MLOps/
 ## Quickstart & Local Setup
 
 ### 1. Prerequisites
-- Python 3.10 or 3.11
+- Python 3.11+
 - Git & Git LFS
 - Make (optional, for developer shortcut commands)
 

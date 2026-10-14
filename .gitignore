@@ -108,3 +108,4 @@ mlruns/*
 
 # DO NOT ignore .dvc files, dvc.yaml, dvc.lock, params.yaml
 *.egg-info/
+notebooks/mlruns/

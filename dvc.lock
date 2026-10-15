@@ -120,7 +120,8 @@ stages:
       md5: 4ade4f1e58f2c65e2c34800ec99f358c
       size: 242191
   train_baseline:
-    cmd: MLFLOW_ALLOW_FILE_STORE=true python src/models/train_baseline.py
+    cmd: MLFLOW_ALLOW_FILE_STORE=true PYTHONPATH=. python 
+      src/models/train_baseline.py
     deps:
     - path: data/processed/train.parquet
       hash: md5
@@ -147,7 +148,8 @@ stages:
       md5: b317b965e7e684a1a16ef055deee0a78
       size: 91287
   train_compare:
-    cmd: MLFLOW_ALLOW_FILE_STORE=true python src/models/train_compare.py
+    cmd: MLFLOW_ALLOW_FILE_STORE=true PYTHONPATH=. python 
+      src/models/train_compare.py
     deps:
     - path: data/processed/train.parquet
       hash: md5
@@ -177,7 +179,8 @@ stages:
       md5: 4698720322000d940bf93a9205105ffc
       size: 27830425
   evaluate:
-    cmd: MLFLOW_ALLOW_FILE_STORE=true python src/evaluation/evaluate.py
+    cmd: MLFLOW_ALLOW_FILE_STORE=true PYTHONPATH=. python 
+      src/evaluation/evaluate.py
     deps:
     - path: data/processed/test.parquet
       hash: md5

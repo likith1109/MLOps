@@ -95,7 +95,7 @@ Features are fitted on **train only** and applied to val/test:
 
 ## 7. Models
 
-| Model                  | Key hyperparameters (from params.yaml)                    |
+| Model                  | Key hyperparameters (params.yaml and training scripts)                    |
 |------------------------|-----------------------------------------------------------|
 | Logistic Regression    | C=1.0, solver=lbfgs, max_iter=1000, class_weight=balanced |
 | Random Forest          | n_estimators=300, max_depth=None, class_weight=balanced   |

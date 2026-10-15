@@ -79,7 +79,7 @@ The following scripts implement the data pipeline (all runnable via `python src/
 | :--- | :--- |
 | `src/data/download_mohler.py` | Downloads Mohler ASAG from Hugging Face, saves to `data/external/mohler/` |
 | `src/data/prepare_dataset.py` | Converts to Parquet/CSV, saves to `data/raw/`, DVC-tracked |
-| `src/data/load_data.py` | Loads raw data, computes `score_avg`, derives `quality_label` using `params.yaml` thresholds |
+| `src/data/load_data.py` | Validates the prepared data (columns, dtypes, no nulls, scores in 0-5, labels in {0,1,2,3}) and writes `data/interim/loaded_data.parquet` |
 | `src/data/preprocess.py` | Grouped split (GroupShuffleSplit) by `question_id` → `data/processed/train.parquet`, `val.parquet`, `test.parquet` |
 | `src/features/build_features.py` | TF-IDF + length + reference similarity features, fitted on train only |
 

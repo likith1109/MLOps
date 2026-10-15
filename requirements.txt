@@ -234,3 +234,5 @@ yarl==1.25.1
 zc.lockfile==4.0
 zipp==4.1.0
 datasets==5.1.0
+coverage==7.16.2
+pytest-cov==7.1.0

@@ -20,7 +20,7 @@
 
 <!-- Technology Badges -->
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11-FF6B00?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![DVC](https://img.shields.io/badge/DVC-v3.40_Data_Ops-FF8C00?style=for-the-badge&logo=dvc&logoColor=white)](https://dvc.org/)
+[![DVC](https://img.shields.io/badge/DVC-v3.67_Data_Ops-FF8C00?style=for-the-badge&logo=dvc&logoColor=white)](https://dvc.org/)
 [![MLflow](https://img.shields.io/badge/MLflow-Tracking_&_Registry-FFA726?style=for-the-badge&logo=mlflow&logoColor=white)](https://mlflow.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Modeling-FF6B00?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Serving_(Phase_2)-1A1A1A?style=for-the-badge&logo=fastapi&logoColor=FF8C00)](https://fastapi.tiangolo.com/)

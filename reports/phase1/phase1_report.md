@@ -64,7 +64,7 @@ Agreement between the two human graders (computed on all 2,273 rows):
 
 ## 5. Splits
 
-Data is split by `question_id` using `StratifiedGroupKFold` logic (grouped by question, stratified by label) to ensure no question appears in more than one split. This prevents leakage: answers to the same question share the reference answer and topical vocabulary, so placing them in both train and test would inflate performance.
+Data is split by `question_id` using `GroupShuffleSplit` (test first, then validation) so no question appears in more than one split. Grouped 5-fold CV on train uses `StratifiedGroupKFold`. This prevents leakage: answers to the same question share the reference answer and topical vocabulary, so placing them in both train and test would inflate performance.
 
 | Split  | Rows  | Questions | Poor | Needs Imp. | Good | Excellent |
 |--------|-------|-----------|------|------------|------|-----------|
@@ -87,9 +87,9 @@ The Poor class has only 10 test rows, making per-class estimates unstable.
 Features are fitted on **train only** and applied to val/test:
 
 - **TF-IDF**: 5,000 max features, n-gram range (1,2), English stop words, min_df=2, sublinear_tf=true
-- **Length features** (5): candidate answer character count, word count, sentence count, avg word length, avg sentence length
+- **Length features** (5): character count, token count, sentence count, unique-token ratio, mean word length
 - **Reference similarity** (1): cosine similarity between candidate and reference answer TF-IDF vectors
-- **Total feature count**: 5,006
+- **Total feature count**: 2,824 (2,818 TF-IDF terms after min_df=2, 5 length features, 1 cosine similarity)
 
 ---
 

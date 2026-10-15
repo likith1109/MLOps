@@ -31,7 +31,7 @@
 <!-- Project & Academic Badges -->
 [![Course](https://img.shields.io/badge/Course-AI252TA%3A%20MLOps-FF6B00?style=flat-square&logo=bookstack&logoColor=white)](https://github.com/Tejzraj/MLOps)
 [![Semester](https://img.shields.io/badge/Semester-V-FF8C00?style=flat-square)](https://github.com/Tejzraj/MLOps)
-[![Status](https://img.shields.io/badge/Project_Stage-Phase_0%20(Foundation)-FFA726?style=flat-square)](docs/PROJECT_STATUS.md)
+[![Status](https://img.shields.io/badge/Project_Stage-Phase_1%20(Development_%26_Reproducibility)-FFA726?style=flat-square)](docs/PROJECT_STATUS.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0D1117?style=flat-square&logo=opensourceinitiative&logoColor=white)](LICENSE)
 [![SDG 4](https://img.shields.io/badge/UN%20SDG-4%20Quality%20Education-FF6B00?style=flat-square)](https://sdgs.un.org/goals/goal4)
 [![SDG 8](https://img.shields.io/badge/UN%20SDG-8%20Decent%20Work%20%26%20Economic%20Growth-FF8C00?style=flat-square)](https://sdgs.un.org/goals/goal8)
@@ -47,7 +47,7 @@ The **AI-Based Interview Preparation Assistant** is an end-to-end Machine Learni
 Engineered for academic course **AI252TA (Machine Learning Operations - Semester V)**, this repository implements industry-standard MLOps practices: **versioned data pipelines with DVC**, **reproducible experiment tracking with MLflow**, **automated quality validation**, **containerized inference serving**, and **drift-triggered continuous retraining**.
 
 > [!NOTE]
-> **Foundation Status:** This project is at **Phase 0 (Foundation)**. No model weights, production deployments, or fabricated benchmark results are claimed. All milestones follow a structured, phased academic implementation plan.
+> **Status:** Phase 1 (Development & Reproducibility) is finished through test evaluation; see [`reports/phase1/phase1_report.md`](reports/phase1/phase1_report.md). No model is deployed and Phase 2 (serving, CI/CD) has not started. Faculty review of the dataset change is pending.
 
 ---
 
@@ -78,12 +78,12 @@ dvc repro
 python -m pytest -q
 ```
 
-**Dataset:** Mohler ASAG (Short Answer Grading) — `nkazi/MohlerASAG` on Hugging Face, subset `cleaned`, split `open_ended`, 2273 rows, CC BY 4.0 license (Mohler, Bunescu & Mihalcea 2011). This replaces the earlier synthetic interview data specification. The `data/external/mohler/open_ended.parquet` is DVC-tracked; teammates must run the download command above because the DVC remote (`~/dvc_storage`) is local-only and `dvc pull` will not work for them.
+**Dataset:** Mohler ASAG (Short Answer Grading) — `nkazi/MohlerASAG` on Hugging Face, subset `cleaned`, split `open_ended`, 2,273 rows, 81 questions, CC BY 4.0 license (Mohler, Bunescu & Mihalcea 2011). The `data/external/mohler/open_ended.parquet` is DVC-tracked; teammates must run the download command above because the DVC remote (`~/dvc_storage`) is local-only and `dvc pull` will not work for them.
 
 **Files not in Git (enforced by `.gitignore`):** `data/`, `models/*.joblib`, `mlruns/`, `.env`. Commit only code, config, and `dvc.lock`/`*.dvc` pointer files.
 
 > [!NOTE]
-> **Phase 1 is in progress.** This quickstart runs the current pipeline through evaluation; it does not imply Phase 1 completion or production readiness.
+> **Phase 1 is complete through evaluation.** The quickstart runs the full pipeline through test evaluation. See [`reports/phase1/phase1_report.md`](reports/phase1/phase1_report.md) for results, limitations, and reproducibility details. Phase 2 (serving, CI/CD) is planned next.
 
 ---
 
@@ -94,12 +94,12 @@ python -m pytest -q
                                  PROJECT PROGRESSION
 ========================================================================================
 Phase 0: Foundation & Environment    [████████████████████] 100% (Completed)
-Phase 1: Development & Reproduce     [░░░░░░░░░░░░░░░░░░░░]   0% (In Preparation)
+Phase 1: Development & Reproduce     [████████████████░░]  80% (In Progress)
 Phase 2: Serving & CI/CD Pipeline    [░░░░░░░░░░░░░░░░░░░░]   0% (Planned)
 Phase 3: Observability & Governance  [░░░░░░░░░░░░░░░░░░░░]   0% (Planned)
 ========================================================================================
-CURRENT ACTIVE PHASE : PHASE 1 — DATASET SPECIFICATION & ACADEMIC DEFENSE
-NEXT MILESTONE       : FACULTY APPROVAL & DVC DATASET INGESTION
+CURRENT ACTIVE PHASE : PHASE 1 — DEVELOPMENT & REPRODUCIBILITY
+NEXT MILESTONE       : PHASE 1 REPORT & PHASE 2 PLANNING
 ========================================================================================
 ```
 
@@ -110,24 +110,30 @@ NEXT MILESTONE       : FACULTY APPROVAL & DVC DATASET INGESTION
 ```text
 Phase 1 Execution Flow:
 Dataset Specification ──► Dataset Acquisition ──► EDA ──► Feature Engineering ──► Baseline Model ──► MLflow Tracking
-    [IN PROGRESS]             [NOT STARTED]     [NOT STARTED]    [NOT STARTED]        [NOT STARTED]       [NOT STARTED]
+    [COMPLETED]             [COMPLETED]         [COMPLETED]    [COMPLETED]            [COMPLETED]           [COMPLETED]
 ```
 
 | Lifecycle Component | Status | Artifact / Documentation Reference |
 | :--- | :---: | :--- |
-| **Dataset Specification** | `[~] IN PROGRESS` | [`docs/dataset/DATASET_SPECIFICATION.md`](docs/dataset/DATASET_SPECIFICATION.md) |
-| **Labeling Guidelines & Rubric** | `[~] IN PROGRESS` | [`docs/dataset/LABELING_GUIDELINES.md`](docs/dataset/LABELING_GUIDELINES.md) |
-| **Data Collection Protocol** | `[~] IN PROGRESS` | [`docs/dataset/DATA_COLLECTION.md`](docs/dataset/DATA_COLLECTION.md) |
-| **Faculty Approval Dossier** | `[ ] PENDING REVIEW` | [`docs/dataset/DATASET_APPROVAL.md`](docs/dataset/DATASET_APPROVAL.md) |
-| **Dataset Acquisition & DVC Tracking** | `[ ] NOT STARTED` | Planned under `data/raw/` tracked via DVC |
-| **Exploratory Data Analysis (EDA)** | `[ ] NOT STARTED` | [`notebooks/01_data_exploration.ipynb`](notebooks/01_data_exploration.ipynb) |
-| **Feature Engineering Pipeline** | `[ ] NOT STARTED` | [`notebooks/03_feature_engineering.ipynb`](notebooks/03_feature_engineering.ipynb), `src/features/` |
-| **Baseline Model Training** | `[ ] NOT STARTED` | [`notebooks/04_baseline_models.ipynb`](notebooks/04_baseline_models.ipynb), `src/models/` |
-| **MLflow Experiment Tracking** | `[ ] NOT STARTED` | Local & remote tracking configured in `mlruns/` |
+| **Dataset Specification** | `[x] COMPLETED` | [`docs/dataset/DATASET_SPECIFICATION.md`](docs/dataset/DATASET_SPECIFICATION.md) |
+| **Labeling Guidelines & Rubric** | `[x] COMPLETED` | [`docs/dataset/LABELING_GUIDELINES.md`](docs/dataset/LABELING_GUIDELINES.md) |
+| **Data Collection Protocol** | `[x] COMPLETED` | [`docs/dataset/DATA_COLLECTION.md`](docs/dataset/DATA_COLLECTION.md) |
+| **Faculty Approval Dossier** | `[x] COMPLETED` | [`docs/dataset/DATASET_APPROVAL.md`](docs/dataset/DATASET_APPROVAL.md) |
+| **Faculty Committee Review** | `[ ] PENDING` | pending |
+| **Dataset Acquisition & DVC Tracking** | `[x] COMPLETED` | `data/raw/interview_data.parquet` (DVC-tracked via `dvc.lock`) |
+| **Exploratory Data Analysis (EDA)** | `[x] COMPLETED` | [`notebooks/01_data_exploration.ipynb`](notebooks/01_data_exploration.ipynb) |
+| **Feature Engineering Pipeline** | `[x] COMPLETED` | [`notebooks/03_feature_engineering.ipynb`](notebooks/03_feature_engineering.ipynb), `src/features/build_features.py` |
+| **Baseline Model Training (Logistic Regression)** | `[x] COMPLETED` | [`notebooks/04_baseline_models.ipynb`](notebooks/04_baseline_models.ipynb), `src/models/train_baseline.py` |
+| **Comparison Model Training (Random Forest)** | `[x] COMPLETED` | `src/models/train_compare.py`, `models/rf_model.joblib` |
+| **MLflow Experiment Tracking** | `[x] COMPLETED` | `mlruns/`, experiment: `interview-answer-quality-baseline` |
+| **Full Pipeline Reproducibility (`dvc repro`)** | `[x] COMPLETED` | Verified: two consecutive runs skip all stages |
+| **Phase 1 Synthesis Report** | `[x] COMPLETED` | [`reports/phase1/phase1_report.md`](reports/phase1/phase1_report.md) |
 
 ---
 
 ## Machine Learning Problem Formulation
+
+**Dataset Used:** Mohler Short-Answer Grading (ASAG) corpus — `nkazi/MohlerASAG` on Hugging Face, subset `cleaned`, split `open_ended`, 2,273 candidate answers across 81 questions from one introductory data-structures course (University of North Texas), CC BY 4.0 license. Replaces the earlier synthetic interview data specification.
 
 ```
 ┌─────────────────────────────────┐       ┌─────────────────────────────────┐
@@ -139,7 +145,8 @@ Dataset Specification ──► Dataset Acquisition ──► EDA ──► Feat
                                       ▼
                       ┌───────────────────────────────┐
                       │    ML Feature Extraction      │
-                      │  (TF-IDF / Linguistic / Embed) │
+                      │  (TF-IDF / Length / Reference  │
+                      │   Similarity / 2,824 features) │
                       └───────────────┬───────────────┘
                                       │
                                       ▼
@@ -147,20 +154,20 @@ Dataset Specification ──► Dataset Acquisition ──► EDA ──► Feat
                       │ Answer Quality Classification │
                       └───────────────┬───────────────┘
                                       │
-        ┌──────────────┬──────────────┴──────────────┬──────────────┐
-        ▼              ▼                             ▼              ▼
-     Class 0        Class 1                       Class 2        Class 3
-    [ Poor ]  [ Needs Improvement ]              [ Good ]     [ Excellent ]
+          ┌──────────────┬────────────┴────────────┬──────────────┐
+          ▼              ▼                         ▼              ▼
+       Class 0        Class 1                    Class 2        Class 3
+      [ Poor ]  [ Needs Improvement ]           [ Good ]     [ Excellent ]
 ```
 
 ### Problem Definition
-- **Input:** Multi-turn technical or behavioral interview prompt (`interview_question`) and raw candidate textual response (`candidate_answer`).
-- **Target Output:** 4-class ordinal quality classification score (`quality_label` $\in \{0, 1, 2, 3\}$).
-- **Evaluation Criteria:**
-  - **Class 0 (Poor):** Irrelevant, incoherent, factually erroneous, or fewer than 5 tokens.
-  - **Class 1 (Needs Improvement):** Superficial answer missing critical concepts or terminology.
-  - **Class 2 (Good):** Factually accurate, technically sound, and clearly articulated.
-  - **Class 3 (Excellent):** Comprehensive explanation including trade-offs, architecture patterns, and edge cases.
+- **Input:** Interview question (`question`), reference answer (`reference_answer`), candidate answer (`candidate_answer`).
+- **Target Output:** 4-class ordinal quality classification (`quality_label` $\in \{0, 1, 2, 3\}$) derived from `score_avg` (mean of two human graders, 0–5) using thresholds: Poor $\le$ 2.0, Needs Improvement $\le$ 3.5, Good $\le$ 4.5, Excellent $\le$ 5.0.
+- **Evaluation Criteria (from Mohler dataset human scores):**
+  - **Class 0 (Poor):** score_avg in [0.0, 2.0)
+  - **Class 1 (Needs Improvement):** score_avg in [2.0, 3.5)
+  - **Class 2 (Good):** score_avg in [3.5, 4.5)
+  - **Class 3 (Excellent):** score_avg in [4.5, 5.0]
 
 ---
 
@@ -215,11 +222,11 @@ flowchart TD
 | :--- | :--- | :---: | :--- |
 | **Language** | **Python 3.11+** | ![Active](https://img.shields.io/badge/Active-FF6B00?style=flat-square) | Core runtime environment across entire pipeline |
 | **Data Ops** | **Pandas, NumPy** | ![Active](https://img.shields.io/badge/Active-FF6B00?style=flat-square) | Numerical transformations, dataframes, and sanitization |
-| **Data Versioning** | **DVC (Data Version Control)** | ![Planned P1](https://img.shields.io/badge/Phase_1-FF8C00?style=flat-square) | Git-independent dataset versioning and pipeline orchestration |
-| **Machine Learning** | **Scikit-learn** | ![Planned P1](https://img.shields.io/badge/Phase_1-FF8C00?style=flat-square) | Baseline classifiers, TF-IDF vectorization, evaluation metrics |
+| **Data Versioning** | **DVC (Data Version Control)** | ![Active](https://img.shields.io/badge/Active-FF6B00?style=flat-square) | Git-independent dataset versioning and pipeline orchestration |
+| **Machine Learning** | **Scikit-learn** | ![Active](https://img.shields.io/badge/Active-FF6B00?style=flat-square) | Baseline classifiers, TF-IDF vectorization, evaluation metrics |
 | **Prototyping** | **Jupyter Lab / Notebooks** | ![Active](https://img.shields.io/badge/Active-FF6B00?style=flat-square) | Exploratory data analysis, error inspection, visualization |
-| **Experimentation** | **MLflow** | ![Planned P1](https://img.shields.io/badge/Phase_1-FF8C00?style=flat-square) | Experiment tracking, hyperparameter logging, model registry |
-| **Testing** | **PyTest & Coverage** | ![Planned P2](https://img.shields.io/badge/Phase_2-1A1A1A?style=flat-square) | Unit, integration, and model invariance testing |
+| **Experimentation** | **MLflow** | ![Active](https://img.shields.io/badge/Active-FF6B00?style=flat-square) | Experiment tracking, hyperparameter logging, model registry |
+| **Testing** | **PyTest & Coverage** | ![Active](https://img.shields.io/badge/Active-FF6B00?style=flat-square) | Unit, integration, and model invariance testing (25 tests passing) |
 | **Serving API** | **FastAPI & Uvicorn** | ![Planned P2](https://img.shields.io/badge/Phase_2-1A1A1A?style=flat-square) | High-performance REST service for real-time inference |
 | **Containerization** | **Docker** | ![Planned P2](https://img.shields.io/badge/Phase_2-1A1A1A?style=flat-square) | Multi-stage, reproducible microservice container builds |
 | **CI/CD** | **GitHub Actions** | ![Planned P2](https://img.shields.io/badge/Phase_2-1A1A1A?style=flat-square) | Automated linting, test execution, container push |
@@ -257,23 +264,24 @@ Foundation   Dev & Repro  Production   Observability Continuous ML Governance
 <details open>
 <summary><strong>Phase 1 — Development & Reproducibility (CURRENT FOCUS)</strong></summary>
 
-- [x] Dataset specification, 19-field schema, and multi-dimensional rubric authored
+- [x] Dataset specification, labeling guidelines, and data collection protocol authored (`docs/dataset/`)
 - [x] Faculty review dossier prepared (`docs/dataset/DATASET_APPROVAL.md`)
-- [ ] Faculty committee review and formal approval (Pending)
-- [x] DVC initialized with pipeline blueprint (`dvc.yaml`)
-- [ ] Question-bank acquisition & candidate response collection/creation
-- [ ] Human / rubric-based annotation and team dual-audit validation
-- [ ] DVC raw dataset versioning (`data/raw/interview_data.parquet.dvc`)
-- [ ] Data quality checks and schema verification implemented
-- [ ] Exploratory Data Analysis completed (`notebooks/01_data_exploration.ipynb`)
-- [ ] Data preprocessing and cleaning pipeline implemented (`src/data/`)
-- [ ] Stratified grouped train / validation / test partitioning executed
-- [ ] Feature engineering pipeline (TF-IDF, linguistic metrics) constructed (`src/features/`)
-- [ ] Baseline Logistic Regression model trained and logged (`src/models/`)
-- [ ] Comparison Random Forest model trained and evaluated
-- [ ] MLflow experiment tracking integrated (hyperparameters, metrics, confusion matrices)
-- [ ] Full pipeline reproducibility verified using `dvc repro`
-- [ ] Phase 1 synthesis report authored in `reports/phase1/README.md`
+- [ ] Faculty committee review and formal approval (pending)
+- [x] DVC initialized with pipeline blueprint (`dvc.yaml`, `dvc.lock`)
+- [x] Dataset acquired: Mohler ASAG (`nkazi/MohlerASAG`), `open_ended` split, 2,273 answers, 81 questions, CC BY 4.0
+- [x] Dataset versioned with DVC (`data/raw/interview_data.parquet` tracked in `dvc.lock`)
+- [x] Data quality checks and schema verification implemented (`src/data/load_data.py`, `src/data/preprocess.py`)
+- [x] Exploratory Data Analysis completed (`notebooks/01_data_exploration.ipynb`, executed)
+- [x] Data preprocessing and cleaning pipeline implemented (`src/data/preprocess.py`)
+- [x] Grouped (GroupShuffleSplit) train / validation / test partitioning executed (grouped by `question_id`, 56/8/17 questions)
+- [x] Feature engineering pipeline constructed: TF-IDF (up to 5,000 terms, 1-2-grams; 2,818 kept) + 5 length features + 1 reference similarity = 2,824 features (`src/features/build_features.py`)
+- [x] Baseline Logistic Regression model trained and logged (`src/models/train_baseline.py`, `models/baseline_model.joblib`)
+- [x] Comparison Random Forest model trained and evaluated (`src/models/train_compare.py`, `models/rf_model.joblib`)
+- [x] MLflow experiment tracking integrated (hyperparameters, metrics, confusion matrices in `mlruns/`)
+- [x] Model selection rule implemented and applied (CV f1_macro tie → validation f1_macro tie-break → Random Forest selected)
+- [x] Test evaluation completed (Logistic Regression macro-F1 0.3669, Random Forest macro-F1 0.3925, majority baseline 0.1868)
+- [x] Full pipeline reproducibility verified using `dvc repro` (two consecutive runs skip all stages)
+- [x] Phase 1 synthesis report authored in `reports/phase1/phase1_report.md`
 </details>
 
 <details>
@@ -350,7 +358,7 @@ MLOps/
 │
 ├── notebooks/                         # Interactive Jupyter scaffolds for Phase 1
 │   ├── 01_data_exploration.ipynb      # EDA and quality distribution analysis
-│   ├── 02_data_preprocessing.ipynb    # Text sanitization and stratified splitting
+│   ├── 02_data_preprocessing.ipynb    # Text sanitization and grouped splitting
 │   ├── 03_feature_engineering.ipynb   # TF-IDF and syntactic feature extraction
 │   └── 04_baseline_models.ipynb       # Baseline models & MLflow experiment runs
 │
@@ -432,14 +440,14 @@ MLOps/
 ├─────────┬──────────────────────────────────────────┬────────────────────────────┤
 │ Phase   │ Demonstration Workflow                   │ Expected Artifacts         │
 ├─────────┼──────────────────────────────────────────┼────────────────────────────┤
-│ Phase 1 │ Raw Data ➔ DVC Repro ➔ EDA ➔ MLflow Runs │ DVC DAG, MLflow UI Metrics │
+│ Phase 1 │ Raw Data ➔ DVC Repro ➔ EDA ➔ MLflow Runs │ DVC DAG, MLflow UI Metrics, Phase 1 Report │
 │ Phase 2 │ Model Registry ➔ FastAPI ➔ Docker ➔ CI/CD│ OpenAPI Docs, Docker Image │
 │ Phase 3 │ Prod Simulation ➔ Drift Detection ➔ Train│ Evidently Drift Reports    │
 └─────────┴──────────────────────────────────────────┴────────────────────────────┘
 ```
 
 > [!IMPORTANT]
-> The demonstration workflows above represent formal academic deliverables. Each will be made demonstratable sequentially as project milestones are completed.
+> The demonstration workflows above represent formal academic deliverables. Phase 1 is complete through test evaluation with artifacts in `reports/phase1/phase1_report.md`. Phase 2 is planned next.
 
 ---
 

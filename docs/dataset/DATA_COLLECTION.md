@@ -2,207 +2,145 @@
 
 > **Project:** AI-Based Interview Preparation Assistant  
 > **Course:** AI252TA – Machine Learning Operations | Semester V  
-> **Document Status:** PLANNED METHODOLOGY (Collection & Annotation Not Yet Started)  
-> **Last Updated:** 2026-09-27  
+> **Document Status:** COMPLETED — Mohler ASAG Dataset Adopted  
+> **Last Updated:** 2026-10-15  
 
 ---
 
 ## 1. Overview & Core Methodological Principle
 
-This document outlines the end-to-end data acquisition, response creation, annotation, quality control, and versioning protocol for the **AI-Based Interview Preparation Assistant**.
+This document outlines the end-to-end data acquisition protocol for the **AI-Based Interview Preparation Assistant**. The project adopted the **Mohler Short-Answer Grading (ASAG)** corpus from Hugging Face (`nkazi/MohlerASAG`, subset `cleaned`, split `open_ended`) as its Phase 1 dataset, replacing the earlier plan for synthetic interview data creation and human annotation.
 
 > [!IMPORTANT]
-> **Defensibility & Scientific Integrity Rules:**
-> 1. **No Automated Ground Truth:** AI-generated outputs or automated LLM ratings must **never** be blindly treated as ground truth. All ground-truth quality scores must originate from human rubric-based evaluation.
-> 2. **Reference Answer Role:** The reference answer is an **expert-reviewed reference answer** (reviewed against approved curriculum material) designed to assist annotators and evaluation models by illustrating required depth. It is an evaluation support tool, **not** automatically ground truth for candidate answer quality.
-> 3. **Explicit Functional Separation:** We strictly separate *Response Generation* (gathering text) from *Annotation* (evaluating quality), *Validation* (independent auditing), and *Quality Control* (statistical verification).
-> 4. **Honest Project Status:** All collection, annotation, and verification activities are currently **PLANNED / PENDING VERIFICATION**. No production dataset has been collected, labeled, or committed.
+> **Defensibility & Scientific Integrity:**
+> 1. **Real Human Grader Scores:** The Mohler dataset contains scores from two human graders (`score_grader1`, `score_grader2`) on a 0–5 scale for each candidate answer. The average (`score_avg`) is used to derive quality labels via thresholds in `params.yaml`.
+> 2. **No Automated Ground Truth:** Quality labels are derived from human scores, not from LLM-generated judgments.
+> 3. **Reference Answer Role:** The reference answer is an expert answer from the dataset, used to assist evaluation models by illustrating required depth. It is an evaluation support tool, **not** automatically ground truth for candidate answer quality.
+> 4. **Honest Project Status:** The synthetic data collection and annotation pipeline described in earlier versions was **NOT EXECUTED**. The Mohler ASAG dataset was adopted instead.
 
 ---
 
-## 2. End-to-End MLOps Academic Data Sequence
+## 2. Dataset Acquisition Summary
 
-The project adheres to a strict, sequential academic pipeline where downstream steps are blocked until preceding milestones receive approval:
+### What Was Done (Phase 1 Actual)
+1. **Dataset Identification:** Mohler ASAG corpus identified on Hugging Face (`nkazi/MohlerASAG`).
+2. **Subset Selection:** `cleaned` subset, `open_ended` split selected (2,273 answers, 81 questions).
+3. **Download & Versioning:** `src/data/download_mohler.py` downloads the dataset; `src/data/prepare_dataset.py` saves as Parquet and CSV to `data/raw/`, tracked by DVC (`dvc.lock`).
+4. **Label Derivation:** the dataset's own `score_avg` (mean of the two human graders; it is not recomputed) is mapped to 4 classes with the thresholds in `params.yaml` (Poor < 2.0, Needs Improvement < 3.5, Good < 4.5, Excellent ≥ 4.5).
+5. **Grouped Splitting:** `src/data/preprocess.py` splits by `question_id` using a grouped split (GroupShuffleSplit) (56 train / 8 val / 17 test questions) to prevent question leakage.
 
-```
-Dataset specification
-        ↓
-Faculty review/approval
-        ↓
-Source/license verification
-        ↓
-Question normalization
-        ↓
-Domain/difficulty categorization
-        ↓
-Reference-answer preparation
-        ↓
-Candidate response collection/creation
-        ↓
-Human/rubric-based annotation
-        ↓
-QC/validation
-        ↓
-Final dataset
-        ↓
-DVC versioning
-        ↓
-EDA
-        ↓
-Feature engineering
-        ↓
-Baseline models
-        ↓
-MLflow experimentation
-```
+### What Was NOT Done (Original Plan — Superseded)
+- Question-bank acquisition from multiple sources (`raghu298`, academic curricula, etc.)
+- Candidate response creation/collection across 4 proficiency tiers
+- Human/rubric-based annotation by student team members
+- Dual-audit subset review and dispute resolution
+- Class parity balancing (25% ± 3% per tier)
 
-```mermaid
-flowchart TD
-    S0["Dataset Specification & Rubric"] --> S0B["Faculty Review & Approval (PENDING)"]
-    S0B --> S1["1. Source / License Verification"]
-    S1 --> S2["2. Question Normalization & Deduplication"]
-    S2 --> S3["3. Domain & Difficulty Categorization (10 Technical Domains)"]
-    S3 --> S4["4. Reference-Answer Preparation (Expert-Reviewed)"]
-    S4 --> S5["5. Candidate Response Collection / Creation"]
-    S5 --> S6["6. Human / Rubric-Based Annotation"]
-    S6 --> S7["7. QC & Dispute Adjudication (Dual Audit)"]
-    S7 --> S8["8. Final Dataset Assembly & Grouped Splitting"]
-    S8 --> S9["9. DVC Versioning (data/raw/)"]
-    S9 --> S10["10. EDA, Features, Baseline Models & MLflow Tracking"]
-
-    classDef orange fill:#FF6B00,stroke:#0D1117,stroke-width:2px,color:#FFFFFF;
-    classDef dark fill:#161B22,stroke:#FF8C00,stroke-width:1.5px,color:#FFFFFF;
-
-    class S0,S0B,S9 orange;
-    class S1,S2,S3,S4,S5,S6,S7,S8,S10 dark;
-```
+The original plan assumed synthetic data generation and human annotation. The Mohler dataset already contains human grader scores, so the annotation step was inherently completed by the dataset creators (Mohler et al., 2011).
 
 ---
 
-## 3. Detailed Stage Specifications
+## 3. Mohler ASAG Dataset Details
 
-### Stage 1: Question Source Ingestion
-- **Objective:** Curate candidate technical interview questions and reference materials from publicly permissible sources.
-- **Candidate Sources Identified (Pending Formal Verification):**
-  - `raghu298/ml-interview-sft-dataset` (Apache-2.0 candidate, Machine Learning domain).
-  - Standard academic computer science curricula (Operating Systems, DBMS, Computer Networks, OOP, Data Structures).
-- **Status:** `[ ] PENDING VERIFICATION` (Sources identified; formal verification pending faculty approval)
+| Property | Value |
+| :--- | :--- |
+| **Source** | Hugging Face: `nkazi/MohlerASAG` |
+| **Subset** | `cleaned` |
+| **Split Used** | `open_ended` (2,273 rows, 81 questions) |
+| **Split Not Used** | `close_ended` (constrained answer formats) |
+| **Course** | Introductory Data Structures (University of North Texas) |
+| **License** | CC BY 4.0 |
+| **Citation** | Mohler, M., Bunescu, R., & Mihalcea, R. (2011). Learning to Grade Short Answer Questions using Semantic Similarity Measures and Dependency Graph Alignments. *Proceedings of ACL-HLT 2011*. |
 
-### Stage 2: Source & License Verification
-- **Objective:** Verify intellectual property rights and permitted educational/open-source usage with repository-level documentation.
-- **Protocol:**
-  - Record verified source URL, commit/release tag, author, and official license file.
-  - If a license is absent, ambiguous, or unverifiable, mark as `LICENSE VERIFICATION REQUIRED` and exclude from the ingestion pipeline.
-- **Status:** `[ ] PENDING VERIFICATION`
+### Raw Data Columns (from `data/raw/interview_data.parquet`)
+- `question_id`: Unique question identifier
+- `question`: Question text
+- `reference_answer`: Expert reference answer
+- `candidate_answer`: Student candidate answer
+- `score_grader1`: First grader score (0–5)
+- `score_grader2`: Second grader score (0–5)
+- `score_avg`: Mean of two grader scores (0–5)
+- `quality_label`: Derived class (0=Poor, 1=Needs Improvement, 2=Good, 3=Excellent)
 
-### Stage 3: Question Normalization & Deduplication
-- **Objective:** Standardize phrasing, eliminate duplicate questions, and ensure clear pedagogical intent.
-- **Protocol:**
-  - Normalize whitespace, Unicode characters, and formatting.
-  - Compute lexical similarity to identify overlapping questions ($> 85\%$ overlap).
-  - Select the cleanest, most unambiguous prompt.
-- **Status:** `[ ] PLANNED`
-
-### Stage 4: Domain & Difficulty Categorization
-- **Objective:** Classify each verified question into one of the **10 approved technical domains** and assign a difficulty tier (`Easy`, `Medium`, `Hard`).
-- **Approved Domains:**
-  1. Data Structures & Algorithms (DSA)
-  2. Object-Oriented Programming (OOP)
-  3. Database Management Systems (DBMS)
-  4. Computer Networks (CN)
-  5. Operating Systems (OS)
-  6. Python
-  7. C/C++
-  8. Java
-  9. Machine Learning (ML)
-  10. Artificial Intelligence (AI)
-  *(Behavioral and HR questions are classified under `question_type`, not as a technical domain.)*
-- **Status:** `[ ] PLANNED`
-
-### Stage 5: Reference-Answer & Concept Extraction
-- **Objective:** Establish an **expert-reviewed reference answer** (reviewed against approved source material) and a list of `expected_concepts` for every question in the question bank.
-- **Protocol:**
-  - Formulate a reference answer covering expected technical depth.
-  - List 3 to 6 essential technical terms/concepts (e.g., for process vs. thread: `virtual memory`, `context switch overhead`, `thread isolation`, `shared address space`).
-  - *Note: Reference answers support human annotation and model evaluation; they do not dictate candidate ground truth.*
-- **Status:** `[ ] PLANNED`
-
-### Stage 6: Candidate Response Creation / Collection
-- **Objective:** Assemble a pool of unannotated candidate textual answers exhibiting diverse quality levels.
-- **Protocol:**
-  - Responses may be collected from volunteer student mock interviews or drafted as controlled response variants representing varying degrees of conceptual clarity.
-  - **Important:** At this stage, responses are strictly **unlabeled candidate text**. No ground truth is assigned yet.
-- **Status:** `[ ] PLANNED`
-
-### Stage 7: Human / Rubric-Based Annotation
-- **Objective:** Assign rigorous quality scores to each candidate response using [`LABELING_GUIDELINES.md`](LABELING_GUIDELINES.md).
-- **Protocol:**
-  - Student annotators grade each answer across three independent dimensions ($0 - 5$ each):
-    - Correctness ($0 - 5$)
-    - Completeness ($0 - 5$)
-    - Communication ($0 - 5$)
-  - Total score ($0 - 15$) maps to the **PROPOSED** quality tier (strictly **SUBJECT TO FACULTY VALIDATION AND ANNOTATION CALIBRATION**):
-    - $0 - 3 \rightarrow$ `0: Poor`
-    - $4 - 7 \rightarrow$ `1: Needs Improvement`
-    - $8 - 11 \rightarrow$ `2: Good`
-    - $12 - 15 \rightarrow$ `3: Excellent`
-  - Record anonymous `annotator_id` (e.g., `ANN_01`, `ANN_02`) and timestamp. Zero student names, USNs, or emails stored.
-- **Status:** `[ ] NOT STARTED`
-
-### Stage 8: Independent Validation & Disagreement Resolution
-- **Objective:** Audit annotation consistency and resolve edge-case scoring disputes.
-- **Protocol (Semester V Team Strategy):**
-  - A dual-audit subset ($15\% - 20\%$ of samples) is independently evaluated by a second student team member without viewing the initial scores.
-  - Disagreements exceeding 2 points on any dimension or differing in assigned class are flagged for discussion.
-  - Discrepancies are adjudicated by re-evaluating the candidate text against the rubric criteria.
-  - Inter-annotator agreement metrics will be calculated and documented **after** annotation is completed. No speculative metrics are claimed in advance.
-- **Status:** `[ ] NOT STARTED`
-
-### Stage 9: Quality Control & Grouped Splitting
-- **Objective:** Enforce data integrity standards and prevent data leakage across dataset partitions.
-- **Protocol:**
-  - Programmatically verify zero null fields and validate length constraints.
-  - Enforce **Grouped Splitting by `question_id`**: All responses belonging to a single question are partitioned into either Train ($70\%$), Validation ($10\%$), or Test ($20\%$).
-- **Status:** `[ ] NOT STARTED`
-
-### Stage 10: Final Dataset Assembly & DVC Versioning
-- **Objective:** Package the validated dataset into Apache Parquet format and register it under Data Version Control (DVC).
-- **Protocol:**
-  - Export to `data/raw/interview_data.parquet`.
-  - Execute `dvc add data/raw/interview_data.parquet`.
-  - Commit pointer file `data/raw/interview_data.parquet.dvc` into Git.
-- **Status:** `[ ] NOT STARTED`
+### Grader Agreement (from `reports/annotation_agreement.json`)
+- Quadratic-weighted kappa: 0.4875
+- Percent agreement: 58.69%
+- Cohen's kappa: 0.2988
+- Pearson r: 0.5832
+- 89 rows have ambiguous grader scale (affects agreement stats only, not labels)
 
 ---
 
-## 4. Use of AI-Assisted Synthetic Responses
+## 4. Data Pipeline Implementation
 
-> [!CAUTION]
-> **Academic Boundaries on Synthetic Text:**
-> - If LLM prompting or generative tools are utilized during Stage 6 to help draft candidate responses across different proficiency tiers, they serve **solely as a controlled data-generation aid**, subject to explicit faculty approval.
-> - **Synthetic candidate responses are NOT real student responses.** They must never be described as empirical student interview performance.
-> - **Synthetic responses must NOT be treated as ground truth.** The fact that an LLM was prompted to create a "Poor" or "Good" response does not make it ground truth. It must undergo the identical rubric evaluation and human validation process as any other response.
-> - LLM-generated self-ratings are **strictly forbidden** as dataset labels.
+The following scripts implement the data pipeline (all runnable via `python src/...`):
+
+| Script | Purpose |
+| :--- | :--- |
+| `src/data/download_mohler.py` | Downloads Mohler ASAG from Hugging Face, saves to `data/external/mohler/` |
+| `src/data/prepare_dataset.py` | Converts to Parquet/CSV, saves to `data/raw/`, DVC-tracked |
+| `src/data/load_data.py` | Loads raw data, computes `score_avg`, derives `quality_label` using `params.yaml` thresholds |
+| `src/data/preprocess.py` | Grouped split (GroupShuffleSplit) by `question_id` → `data/processed/train.parquet`, `val.parquet`, `test.parquet` |
+| `src/features/build_features.py` | TF-IDF + length + reference similarity features, fitted on train only |
+
+### DVC Pipeline Stages
+1. `prepare_dataset` → `data/raw/interview_data.parquet`, `data/raw/interview_data.csv`
+2. `load_data` → `data/interim/loaded_data.parquet`
+3. `preprocess` → `data/processed/train.parquet`, `val.parquet`, `test.parquet`
+4. `feature_engineering` → `models/feature_pipeline.joblib`
+5. `train_baseline` → `models/baseline_model.joblib` (Logistic Regression)
+6. `train_compare` → `models/rf_model.joblib` (Random Forest)
+7. `evaluate` → `reports/metrics.json`, confusion matrices in `reports/figures/`
+
+Run full pipeline: `dvc repro`
 
 ---
 
-## 5. Pipeline Summary & Status Matrix
+## 5. Data Quality Checks (Implemented)
 
-| Pipeline Stage | Functional Role | Responsible Mechanism | Current Status |
+Programmatic checks in `src/data/load_data.py` and `src/data/preprocess.py`:
+- Zero nulls in required columns
+- `score_avg` computed as mean of two grader scores
+- `quality_label` derived from `score_avg` using `params.yaml` thresholds
+- Grouped split: zero overlapping `question_id` between train/val/test
+- Class distribution logged for each split
+
+### Known Data Quality Issues (from Phase 1 Report)
+- **Duplicates:** 143 rows with duplicate `candidate_answer` (45 unique); 98 redundant copies. 105 fully duplicated rows; 68 fully redundant. 1 `(question_id, candidate_answer)` group with >1 `quality_label`.
+- **Cross-split overlap:** 19 test rows (3.93%) share answer text with train; 6 unique strings overlap train/test.
+- These are documented as limitations; no data was modified after seeing test results.
+
+---
+
+## 6. Use of AI-Assisted Synthetic Responses
+
+> [!NOTE]
+> **The original plan for AI-assisted synthetic response generation was NOT executed.** The Mohler ASAG dataset provides authentic student answers with real human grader scores. No LLM-generated candidate answers or labels were used.
+
+---
+
+## 7. Pipeline Summary & Status Matrix
+
+| Pipeline Stage | Functional Role | Implementation | Status |
 | :--- | :--- | :--- | :---: |
-| 1. Source Ingestion | Question Harvester | External Repos & Curricula | `[ ] PENDING VERIFICATION` |
-| 2. License Audit | Provenance Verification | License Review Checklist | `[ ] PENDING VERIFICATION` |
-| 3. Normalization | Data Cleansing | Python Text Preprocessor | `[ ] PLANNED` |
-| 4. Categorization | Taxonomy Mapping | 10 Technical Domains Guide | `[ ] PLANNED` |
-| 5. Reference Answers | Reference Alignment | Expert-Reviewed Material | `[ ] PLANNED` |
-| 6. Response Creation | Raw Text Generation | Controlled Response Pool | `[ ] PLANNED` |
-| 7. Rubric Annotation | Ground-Truth Labeling | Human Student Annotators | `[ ] NOT STARTED` |
-| 8. Validation Audit | Agreement & Resolution | Team Dual Review Protocol | `[ ] NOT STARTED` |
-| 9. Grouped Splitting | Anti-Leakage Partition | GroupShuffleSplit (`params.yaml`) | `[ ] NOT STARTED` |
-| 10. DVC Versioning | Artifact Tracking | DVC CLI & Git Metadata | `[ ] NOT STARTED` |
+| 1. Dataset Download | Mohler ASAG from Hugging Face | `src/data/download_mohler.py` | `[x] COMPLETED` |
+| 2. Dataset Preparation | Parquet/CSV export, DVC tracking | `src/data/prepare_dataset.py` | `[x] COMPLETED` |
+| 3. Label Derivation | `score_avg` → `quality_label` | `src/data/prepare_dataset.py` | `[x] COMPLETED` |
+| 4. Grouped Splitting | Train/Val/Test by `question_id` | `src/data/preprocess.py` | `[x] COMPLETED` |
+| 5. Feature Engineering | TF-IDF + length + ref similarity | `src/features/build_features.py` | `[x] COMPLETED` |
+| 6. Baseline Training | Logistic Regression | `src/models/train_baseline.py` | `[x] COMPLETED` |
+| 7. Comparison Training | Random Forest | `src/models/train_compare.py` | `[x] COMPLETED` |
+| 8. Evaluation | Test metrics, confusion matrices | `src/evaluation/evaluate.py` | `[x] COMPLETED` |
 
 ---
 
-## 6. Next Immediate Action
+## 8. Next Immediate Action
 
-Awaiting formal course faculty review and sign-off on [`DATASET_APPROVAL.md`](DATASET_APPROVAL.md) before executing source/license verification and question normalization.
+Phase 1 is complete through evaluation. Next steps (Phase 2):
+- Model serving (FastAPI)
+- MLflow Model Registry integration
+- Docker containerization
+- GitHub Actions CI/CD
+- Drift detection (Evidently AI)
+
+See [`reports/phase1/phase1_report.md`](../reports/phase1/phase1_report.md) for full Phase 1 results and Phase 2 plan.

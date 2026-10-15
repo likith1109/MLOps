@@ -3,42 +3,44 @@
 > **Project:** AI-Based Interview Preparation Assistant  
 > **Course:** AI252TA – Machine Learning Operations | Semester V  
 > **Document Type:** Standardized Annotation Protocol & Rubric  
-> **Status:** PROPOSED METHODOLOGY (Requires Faculty Validation & Calibration Before Annotation)  
-> **Version:** `v0.1.2`  
+> **Status:** REFERENCE — Mohler ASAG Human Grader Scores Used (No New Annotation Performed)  
+> **Version:** `v1.0.0`  
+> **Last Updated:** 2026-10-15  
 
 ---
 
 ## 1. Purpose & Guiding Principles
 
-This document establishes the official scoring protocol used to label candidate interview responses. Annotations must be objective, reproducible, and strictly based on pedagogical assessment of technical accuracy, concept coverage, and communication clarity.
+This document establishes the scoring protocol that **would have been used** to label candidate interview responses if the project had proceeded with synthetic data creation and human annotation as originally planned.
+
+**Actual Phase 1 Approach:** The project adopted the **Mohler Short-Answer Grading (ASAG)** corpus, which already contains scores from two human graders (`score_grader1`, `score_grader2`) on a 0–5 scale for each candidate answer. Quality labels were derived from the mean score (`score_avg`) using thresholds defined in `params.yaml`. No new human annotation was performed.
 
 > [!IMPORTANT]
-> **Core Annotation Rules:**
-> 1. **Rubric-Driven Ground Truth:** Ground-truth quality labels must strictly originate from human application of this rubric, **not** from an LLM-generated judgment or automated prompt rating.
-> 2. **Reference Answer Role:** The reference answer is an **expert-reviewed reference answer** (reviewed against approved source materials) providing a baseline benchmark of required depth. It is an evaluation aid, **not** automatically ground truth for candidate quality.
-> 3. **Semester V Practical Strategy:** Annotations will be performed by student project team members using anonymous identifiers (`ANN_01`, `ANN_02`). A dual-annotated subset will be used to resolve discrepancies and assess consistency. Faculty members act as academic advisors and reviewers, not primary annotators.
-> 4. **Proposal Disclaimer:** The scoring definitions and threshold intervals ($0-3, 4-7, 8-11, 12-15$) represent our project's **PROPOSED** methodology and are **SUBJECT TO FACULTY VALIDATION** and **SUBJECT TO ANNOTATION CALIBRATION** before production labeling.
+> **Core Annotation Rules (Original Plan):**
+> 1. **Rubric-Driven Ground Truth:** Ground-truth quality labels must strictly originate from human application of a rubric, **not** from an LLM-generated judgment or automated prompt rating.
+> 2. **Reference Answer Role:** The reference answer is an **expert-reviewed reference answer** providing a baseline benchmark of required depth. It is an evaluation aid, **not** automatically ground truth for candidate quality.
+> 3. **Proposal Disclaimer:** The scoring definitions and threshold intervals below represent the project's **original proposed methodology** and are **SUBJECT TO FACULTY VALIDATION** and **SUBJECT TO ANNOTATION CALIBRATION** before production labeling.
 
 ---
 
-## 2. Multi-Dimensional Evaluation Framework
+## 2. Multi-Dimensional Evaluation Framework (Original Proposed Rubric)
 
-Every candidate response is scored across three independent, orthogonal dimensions ($0 - 5$ points each):
+Every candidate response was to be scored across three independent, orthogonal dimensions ($0 - 5$ points each):
 
 $$\text{Composite Score} = S_{\text{correctness}} + S_{\text{completeness}} + S_{\text{communication}} \quad (0 \le \text{Total} \le 15)$$
 
 ```
-                                      TOTAL SCORE (0 – 15)
-                                                │
-                ┌───────────────────────────────┼───────────────────────────────┐
-                ▼                               ▼                               ▼
-       Correctness (0 – 5)             Completeness (0 – 5)            Communication (0 – 5)
-    Factual Truth & Validity        Key Concepts & Trade-offs       Clarity, Structure & Delivery
+                                       TOTAL SCORE (0 – 15)
+                                                 │
+                 ┌───────────────────────────────┼───────────────────────────────┐
+                 ▼                               ▼                               ▼
+        Correctness (0 – 5)             Completeness (0 – 5)            Communication (0 – 5)
+     Factual Truth & Validity        Key Concepts & Trade-offs       Clarity, Structure & Delivery
 ```
 
 ---
 
-## 3. Dimensional Scoring Rubrics
+## 3. Dimensional Scoring Rubrics (Original Proposed)
 
 ### Dimension A: Correctness ($0 - 5$)
 
@@ -85,14 +87,12 @@ Evaluates how well the response is organized, whether thoughts flow logically, a
 
 ---
 
-## 4. Overall Quality Classification Mapping
+## 4. Overall Quality Classification Mapping (Original Proposed)
 
 > [!WARNING]
-> **Status of Score Thresholds:** The quality tier mapping below is **PROPOSED**, **SUBJECT TO FACULTY VALIDATION**, and **SUBJECT TO ANNOTATION CALIBRATION**.
->
-> These intervals are not scientifically validated constants or established ground truth; final score boundaries will be calibrated based on empirical pilot annotation distributions and formal course faculty review.
+> **Status of Score Thresholds:** The quality tier mapping below is the **original proposed methodology** for the synthetic data plan. It was **NOT USED** in Phase 1. The Mohler dataset uses a different thresholding scheme on `score_avg` (see below).
 
-| Total Score (PROPOSED — SUBJECT TO VALIDATION & CALIBRATION) | Class ID | Quality Tier | Practical Interpretation |
+| Total Score (Original Proposed) | Class ID | Quality Tier | Practical Interpretation |
 | :---: | :---: | :--- | :--- |
 | **0 – 3** | **0** | **Poor** | Severe lack of knowledge; unacceptable for an interview candidate. |
 | **4 – 7** | **1** | **Needs Improvement** | Partial awareness, but lacks depth; requires substantial preparation. |
@@ -101,9 +101,50 @@ Evaluates how well the response is organized, whether thoughts flow logically, a
 
 ---
 
-## 5. Edge-Case Handling Protocols
+## 5. Actual Phase 1 Label Derivation (Mohler ASAG)
 
-Annotators must adhere to the following rules when encountering challenging response types:
+**No new annotation was performed.** Labels were derived from the dataset's existing human grader scores:
+
+1. **Source Scores:** Two human graders scored each candidate answer on a 0–5 scale (`score_grader1`, `score_grader2`).
+2. **Average Score:** `score_avg = (score_grader1 + score_grader2) / 2` (range 0.0–5.0).
+3. **Threshold Mapping (from `params.yaml`):**
+
+| quality_label | Class Name | score_avg Range |
+| :---: | :--- | :--- |
+| 0 | Poor | [0.0, 2.0) |
+| 1 | Needs Improvement | [2.0, 3.5) |
+| 2 | Good | [3.5, 4.5) |
+| 3 | Excellent | [4.5, 5.0] |
+
+4. **Resulting Distribution (2,273 rows):**
+
+| Class | Count | Percentage |
+| :--- | ---: | ---: |
+| Poor | 80 | 3.52% |
+| Needs Improvement | 370 | 16.28% |
+| Good | 396 | 17.42% |
+| Excellent | 1,427 | 62.78% |
+
+---
+
+## 6. Grader Agreement (Mohler Dataset)
+
+Agreement between the two original human graders (from `reports/annotation_agreement.json`):
+
+| Metric | Value |
+| :--- | ---: |
+| Quadratic-weighted kappa | 0.4875 |
+| Percent agreement | 58.69% |
+| Cohen's kappa | 0.2988 |
+| Pearson r | 0.5832 |
+
+**Note:** 89 rows have an ambiguous grader scale (one grader used 0–5, the other 1–5); these affect the agreement statistics above but do not affect the labels used for modeling, which come from `score_avg` after the dataset's own cleaning.
+
+---
+
+## 7. Edge-Case Handling Protocols (Original Proposed)
+
+Annotators would have adhered to the following rules when encountering challenging response types:
 
 ### A. Irrelevant or Off-Topic Answers
 - If a candidate answers a completely different question or responds with pleasantries:
@@ -111,12 +152,12 @@ Annotators must adhere to the following rules when encountering challenging resp
   - Quality Class = `0 (Poor)`.
 
 ### B. Extremely Short Answers ($\le 5$ words)
-- Unless the question is a direct binary question (e.g., *"Is Python statically typed?"*), one-line answers cannot demonstrate depth:
+- Unless the question is a direct binary question, one-line answers cannot demonstrate depth:
   - Max Completeness = `1`.
   - Quality Class = `0` or `1`.
 
 ### C. Technically Correct but Poorly Communicated Answers
-- If an answer is factually correct (Correctness $= 5$, Completeness $= 4$), but poorly structured, rambling, or awkward (Communication $= 2$):
+- If an answer is factually correct (Correctness $= 5$, Completeness $= 4$), but poorly structured (Communication $= 2$):
   - Total Score = $5 + 4 + 2 = 11 \rightarrow$ Class `2 (Good)`.
   - **Rule:** Do NOT artificially depress Correctness due to weak formatting. Maintain separation across dimensions.
 
@@ -130,39 +171,61 @@ Annotators must adhere to the following rules when encountering challenging resp
 
 ### F. Spelling & Minor Grammatical Errors
 - **Principle:** We are evaluating computer science knowledge, not literary perfection.
-- Minor typos (e.g., *"polymorphysm"*, *"concurrancy"*) or non-native phrasing that does **not** alter the technical meaning must **not** penalize Correctness or Completeness, and should carry at most a 1-point reduction on Communication if extreme.
+- Minor typos or non-native phrasing that does **not** alter the technical meaning must **not** penalize Correctness or Completeness, and should carry at most a 1-point reduction on Communication if extreme.
 
 ---
 
-## 6. Practical Human Validation Strategy (Semester V Academic Protocol)
+## 8. Practical Human Validation Strategy (Original Proposed Plan)
 
 To ensure labeling consistency and academic rigor within a college project setting:
-1. **Student Team Annotators:** Scoring is conducted by student project members using the explicit rubrics above.
-2. **Anonymous Annotator Tokens:** Annotators are identified strictly by anonymous keys (`annotator_id` = `ANN_01`, `ANN_02`). Zero student names, USNs, emails, or personal identifiers are stored.
-3. **Dual-Audit Review:** A random $15\% - 20\%$ subset of responses will be independently evaluated by two different team members without viewing each other's scores.
+1. **Student Team Annotators:** Scoring would be conducted by student project members using the explicit rubrics above.
+2. **Anonymous Annotator Tokens:** Annotators identified strictly by anonymous keys (`annotator_id` = `ANN_01`, `ANN_02`). Zero student names, USNs, emails, or personal identifiers stored.
+3. **Dual-Audit Review:** A random $15\% - 20\%$ subset would be independently evaluated by two different team members without viewing each other's scores.
 4. **Dispute Resolution Protocol:**
-   - Any score variance $\ge 2$ points on any dimension, or any variance that shifts the final quality class, is marked as a dispute.
-   - Disputed items are re-examined by both annotators alongside the reference answer and resolved via rubric consensus.
-5. **Consistency Measurement:** Inter-annotator agreement metrics (such as Cohen's Kappa or percent agreement) will be computed and logged in the project report **only after the annotation process is executed**. No fabricated consistency numbers are claimed in advance.
-6. **No False Role Claims:** Faculty members are recognized as project guides and evaluators; they will not be claimed as annotators unless they actively participate in labeling.
+   - Any score variance $\ge 2$ points on any dimension, or any variance that shifts the final quality class, marked as a dispute.
+   - Disputed items re-examined by both annotators alongside the reference answer and resolved via rubric consensus.
+5. **Consistency Measurement:** Inter-annotator agreement metrics (Cohen's Kappa, percent agreement) computed and logged **only after** the annotation process is executed. No fabricated consistency numbers claimed in advance.
+6. **No False Role Claims:** Faculty members recognized as project guides and evaluators; not claimed as annotators unless they actively participate in labeling.
 
 ---
 
-## 7. Use of AI-Assisted Synthetic Responses
+## 9. Use of AI-Assisted Synthetic Responses (Original Proposed Plan)
 
 > [!CAUTION]
-> **Handling AI-Assisted Synthetic Text:**
-> - If AI tools are used to assist in generating candidate responses across quality tiers, they serve **strictly as a controlled data-generation aid**, subject to faculty review.
+> **Handling AI-Assisted Synthetic Text (Original Plan):**
+> - If AI tools were used to assist in generating candidate responses across quality tiers, they would serve **strictly as a controlled data-generation aid**, subject to faculty review.
 > - **Synthetic candidate answers are NOT real student responses.** They must never be represented as empirical human interview behavior.
 > - **Synthetic answers must NOT be treated as ground truth.** The prompt used to generate a response does not dictate its label. Every synthetic response must be independently inspected, scored, and validated by human annotators using this rubric.
 > - LLM self-grading without human annotation is strictly forbidden.
 
+**Actual Phase 1:** No synthetic responses were generated. The Mohler dataset provides authentic student answers.
+
 ---
 
-## 8. Dataset Limitations
+## 10. Dataset Limitations (Actual Phase 1)
 
-1. **Synthetic-Data Bias:** If synthetic responses are utilized, they may carry subtle stylistic markers or predictable vocabulary patterns characteristic of LLMs.
-2. **Annotator Diversity:** Annotation is performed by student team members and reflects academic peer judgment rather than seasoned industry recruiters.
-3. **Communication Scoring Subjectivity:** Evaluating communication clarity retains some inherent human subjectivity, mitigated by explicit rubric boundaries.
-4. **Domain Scope:** Focuses on 10 foundational engineering subjects in Phase 1 (DSA, OOP, DBMS, CN, OS, Python, C/C++, Java, ML, AI).
-5. **Synthetic vs. Real-World Mismatch:** Synthetic responses may not capture authentic human disfluencies, nervous pauses, or real-time cognitive shifts that occur during actual verbal interviews.
+1. **Single course**: Only one introductory data-structures course (UNT); generalization unknown.
+2. **Skewed labels**: Excellent class is 62.8% of data; Poor is 3.5%.
+3. **Tiny Poor test class**: Only 10 test rows → unstable per-class estimates.
+4. **Few questions**: 8 validation and 17 test questions → high variance in grouped CV.
+5. **Thresholds are a design choice**: The four bins (Poor <2.0, Needs Improvement <3.5, Good <4.5, Excellent ≥4.5) are a design choice, fixed in params.yaml before training.
+6. **Moderate grader agreement**: Quadratic-weighted kappa 0.4875; labels have noise.
+7. **High variance across questions**: CV f1_macro std ~0.045.
+8. **Duplicates and cross-split text overlap** in raw data.
+9. **DVC remote is local-only**: Data is not on GitHub; fresh clone requires re-downloading from Hugging Face.
+10. **Faculty notification**: Faculty have not yet been informed of the dataset change; this is pending.
+
+---
+
+## 11. Summary
+
+| Aspect | Original Plan | Actual Phase 1 |
+| :--- | :--- | :--- |
+| **Data Source** | Synthetic generation across 10 domains | Mohler ASAG (1 domain, real students) |
+| **Annotation** | Student team rubric-based (15-point) | Pre-existing human grader scores (0–5 each) |
+| **Label Derivation** | 3-dimension rubric → 0–15 → 4 tiers | `score_avg` (0–5) → 4 tiers via thresholds |
+| **Grader Agreement** | To be measured (dual-audit) | QWK = 0.4875 (two original graders) |
+| **Class Balance** | Target 25% ± 3% per tier | Highly skewed (Excellent 62.8%) |
+| **Faculty Approval** | Required before annotation | Dossier prepared; review pending |
+
+See full Phase 1 report: [`reports/phase1/phase1_report.md`](../reports/phase1/phase1_report.md)
